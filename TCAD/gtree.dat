@@ -1,0 +1,211 @@
+# Copyright (C) 1994-2023 Synopsys Inc.
+# swbtree vcurrent, saved by swb
+
+# --- simulation flow
+sde sde "-e" {}
+sde xAl "0.2" {0.14} V
+sde xIn "0.18" {0.16 0.24} V
+sde tpInGaN "0.06" {0.06} V
+sde tRecess "0.03" {0.055} V
+sde InGaN_Dope "3e17" {1e17} V
+sde p+_InGaN_Dope "2e18" {1e18} V
+sde tp++InGaN "0.003" {0.003} V
+sde AlN1 "1" {1} V
+sde AlN2 "0" {1} R
+IdVg sdevice "" {}
+IdVg Strain "1" {1} V
+IdVg EquiOnly "0" {0} V
+IdVg InGaN_AlGaN "1" {1} V
+IdVg AlGaN_GaN "1" {1} V
+IdVg InGaN_AlN "1" {1} V
+IdVg AlN_AlGaN "1" {1} V
+IdVg AlN_GaN "1" {1} V
+IdVg Vgstart "8" {6.2257 4.4725 2.8058 4.4725 6.2257} V
+IdVg Vgend "-5" {-2.1076 -3.8609} V
+IdVg ntdr "4" {5} V
+IdVg gate "-7" {-7} R
+# --- variables
+# --- scenarios and parameter specs
+scenario default xAl ""
+scenario default xIn ""
+scenario default tpInGaN ""
+scenario default tRecess ""
+scenario default InGaN_Dope ""
+scenario default p+_InGaN_Dope ""
+scenario default tp++InGaN ""
+scenario default AlN1 ""
+scenario default AlN2 ""
+scenario default Strain ""
+scenario default EquiOnly ""
+scenario default InGaN_AlGaN ""
+scenario default AlGaN_GaN ""
+scenario default InGaN_AlN ""
+scenario default AlN_AlGaN ""
+scenario default AlN_GaN ""
+scenario default Vgstart ""
+scenario default Vgend ""
+scenario default ntdr ""
+scenario default gate ""
+scenario trecess_055_01_01 xAl ""
+scenario trecess_055_01_01 xIn ""
+scenario trecess_055_01_01 tpInGaN ""
+scenario trecess_055_01_01 tRecess ""
+scenario trecess_055_01_01 InGaN_Dope ""
+scenario trecess_055_01_01 p+_InGaN_Dope ""
+scenario trecess_055_01_01 tp++InGaN ""
+scenario trecess_055_01_01 AlN1 ""
+scenario trecess_055_01_01 AlN2 ""
+scenario trecess_055_01_01 Strain ""
+scenario trecess_055_01_01 EquiOnly ""
+scenario trecess_055_01_01 InGaN_AlGaN ""
+scenario trecess_055_01_01 AlGaN_GaN ""
+scenario trecess_055_01_01 InGaN_AlN ""
+scenario trecess_055_01_01 AlN_AlGaN ""
+scenario trecess_055_01_01 AlN_GaN ""
+scenario trecess_055_01_01 Vgstart ""
+scenario trecess_055_01_01 Vgend ""
+scenario trecess_055_01_01 ntdr ""
+scenario trecess_055_01_01 gate ""
+scenario Trecess_055_XAl_G_02 xAl ""
+scenario Trecess_055_XAl_G_02 xIn ""
+scenario Trecess_055_XAl_G_02 tpInGaN ""
+scenario Trecess_055_XAl_G_02 tRecess ""
+scenario Trecess_055_XAl_G_02 InGaN_Dope ""
+scenario Trecess_055_XAl_G_02 p+_InGaN_Dope ""
+scenario Trecess_055_XAl_G_02 tp++InGaN ""
+scenario Trecess_055_XAl_G_02 AlN1 ""
+scenario Trecess_055_XAl_G_02 AlN2 ""
+scenario Trecess_055_XAl_G_02 Strain ""
+scenario Trecess_055_XAl_G_02 EquiOnly ""
+scenario Trecess_055_XAl_G_02 InGaN_AlGaN ""
+scenario Trecess_055_XAl_G_02 AlGaN_GaN ""
+scenario Trecess_055_XAl_G_02 InGaN_AlN ""
+scenario Trecess_055_XAl_G_02 AlN_AlGaN ""
+scenario Trecess_055_XAl_G_02 AlN_GaN ""
+scenario Trecess_055_XAl_G_02 Vgstart ""
+scenario Trecess_055_XAl_G_02 Vgend ""
+scenario Trecess_055_XAl_G_02 ntdr ""
+scenario Trecess_055_XAl_G_02 gate ""
+scenario xIn008 xAl ""
+scenario xIn008 xIn ""
+scenario xIn008 tpInGaN ""
+scenario xIn008 tRecess ""
+scenario xIn008 InGaN_Dope ""
+scenario xIn008 p+_InGaN_Dope ""
+scenario xIn008 tp++InGaN ""
+scenario xIn008 AlN1 ""
+scenario xIn008 AlN2 ""
+scenario xIn008 Strain ""
+scenario xIn008 EquiOnly ""
+scenario xIn008 InGaN_AlGaN ""
+scenario xIn008 AlGaN_GaN ""
+scenario xIn008 InGaN_AlN ""
+scenario xIn008 AlN_AlGaN ""
+scenario xIn008 AlN_GaN ""
+scenario xIn008 Vgstart ""
+scenario xIn008 Vgend ""
+scenario xIn008 ntdr ""
+scenario xIn008 gate ""
+scenario trecess0057 xAl ""
+scenario trecess0057 xIn ""
+scenario trecess0057 tpInGaN ""
+scenario trecess0057 tRecess ""
+scenario trecess0057 InGaN_Dope ""
+scenario trecess0057 p+_InGaN_Dope ""
+scenario trecess0057 tp++InGaN ""
+scenario trecess0057 AlN1 ""
+scenario trecess0057 AlN2 ""
+scenario trecess0057 Strain ""
+scenario trecess0057 EquiOnly ""
+scenario trecess0057 InGaN_AlGaN ""
+scenario trecess0057 AlGaN_GaN ""
+scenario trecess0057 InGaN_AlN ""
+scenario trecess0057 AlN_AlGaN ""
+scenario trecess0057 AlN_GaN ""
+scenario trecess0057 Vgstart ""
+scenario trecess0057 Vgend ""
+scenario trecess0057 ntdr ""
+scenario trecess0057 gate ""
+scenario Vg==20 xAl ""
+scenario Vg==20 xIn ""
+scenario Vg==20 tpInGaN ""
+scenario Vg==20 tRecess ""
+scenario Vg==20 InGaN_Dope ""
+scenario Vg==20 p+_InGaN_Dope ""
+scenario Vg==20 tp++InGaN ""
+scenario Vg==20 AlN1 ""
+scenario Vg==20 AlN2 ""
+scenario Vg==20 Strain ""
+scenario Vg==20 EquiOnly ""
+scenario Vg==20 InGaN_AlGaN ""
+scenario Vg==20 AlGaN_GaN ""
+scenario Vg==20 InGaN_AlN ""
+scenario Vg==20 AlN_AlGaN ""
+scenario Vg==20 AlN_GaN ""
+scenario Vg==20 Vgstart ""
+scenario Vg==20 Vgend ""
+scenario Vg==20 ntdr ""
+scenario Vg==20 gate ""
+scenario xIn xAl ""
+scenario xIn xIn ""
+scenario xIn tpInGaN ""
+scenario xIn tRecess ""
+scenario xIn InGaN_Dope ""
+scenario xIn p+_InGaN_Dope ""
+scenario xIn tp++InGaN ""
+scenario xIn AlN1 ""
+scenario xIn AlN2 ""
+scenario xIn Strain ""
+scenario xIn EquiOnly ""
+scenario xIn InGaN_AlGaN ""
+scenario xIn AlGaN_GaN ""
+scenario xIn InGaN_AlN ""
+scenario xIn AlN_AlGaN ""
+scenario xIn AlN_GaN ""
+scenario xIn Vgstart ""
+scenario xIn Vgend ""
+scenario xIn ntdr ""
+scenario xIn gate ""
+# --- simulation tree
+0 1 0 {} {default} 0
+1 22147 1 {0.14} {default} 0
+2 22708 22147 {0.16} {default} 0
+3 22709 22708 {0.06} {default} 0
+4 22710 22709 {0.055} {default} 0
+5 22711 22710 {1e17} {default} 0
+6 22712 22711 {1e18} {default} 0
+7 22713 22712 {0.003} {default} 0
+8 22714 22713 {1} {default} 0
+9 22725 22714 {1} {default} 0
+10 22726 22725 {} {default} 0
+11 22727 22726 {1} {default} 0
+12 22728 22727 {0} {default} 0
+13 22729 22728 {1} {default} 0
+14 22730 22729 {1} {default} 0
+15 22731 22730 {1} {default} 0
+16 22732 22731 {1} {default} 0
+17 24309 22732 {1} {default} 0
+18 24346 24309 {4.4725} {default} 0
+19 24348 24346 {-3.8609} {default} 0
+20 22733 24348 {5} {default} 0
+21 22734 22733 {-7} {default} 0
+2 23128 22147 {0.24} {default} 0
+3 23129 23128 {0.06} {default} 0
+4 23130 23129 {0.055} {default} 0
+5 23131 23130 {1e17} {default} 0
+6 23132 23131 {1e18} {default} 0
+7 23133 23132 {0.003} {default} 0
+8 23134 23133 {1} {default} 0
+9 23145 23134 {1} {default} 0
+10 23146 23145 {} {default} 0
+11 23147 23146 {1} {default} 0
+12 23148 23147 {0} {default} 0
+13 23149 23148 {1} {default} 0
+14 23150 23149 {1} {default} 0
+15 23151 23150 {1} {default} 0
+16 23152 23151 {1} {default} 0
+17 24345 23152 {1} {default} 0
+18 24347 24345 {6.2257} {default} 0
+19 24349 24347 {-2.1076} {default} 0
+20 23153 24349 {5} {default} 0
+21 23154 23153 {-7} {default} 0

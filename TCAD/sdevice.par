@@ -1,0 +1,49 @@
+#define ParFileDir .
+
+Material="AlGaN" {
+  #includeext "ParFileDir/AlGaN.par"
+}
+Material="AlN" {
+  #includeext "ParFileDir/AlN.par"
+}
+Material="GaN" {
+  #includeext "ParFileDir/GaN.par"
+}
+Material="InN" {
+  #includeext "ParFileDir/InN.par"
+}
+Material="InGaN" {
+  #includeext "ParFileDir/InGaN.par"
+}
+Material="Al2O3" {
+  #includeext "ParFileDir/Al2O3.par"
+}
+*Material = "GaN" {
+*  #include "GaN_des.par"
+**}
+*Material = "AlN" {
+*  #include "AlN_des.par"
+**}
+*Material = "AlGaN" {
+*  #include "AlGaN_des.par"
+**}
+*Material="SiO2" {
+*  #includeext "ParFileDir/SiO2.par"
+**}
+
+ 
+
+LatticeParameters
+{ 
+  * X and Y vectors define the simulation coordinate system relative to the
+  * crystal orientation system.
+    X = (1 0  0)
+    Y = (0 0 -1)
+}
+
+ 
+ThermionicEmission {
+	Formula= 1
+}
+
+
