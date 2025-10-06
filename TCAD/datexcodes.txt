@@ -1,0 +1,16 @@
+DATEX2.1
+Datacode
+"$Id: //tcad/gemini/main/src/datexcodes/datexcodes.txt#84 $ $Author: sjin $ $DateTime: 2009/03/03 15:58:10 $"
+"Data codes for semiconductor process and device simulation"
+
+Materials {
+
+
+    Al2O3 {
+        label   = "Al2O3"
+        group   = Insulator
+        color   = #8e0505, #c58a11
+        alter1  = Ox
+        alter2  = 1
+    }
+}
