@@ -1,32 +1,13 @@
 import os
+import argparse
 import numpy as np
 import pandas as pd
 import mylibrary as mylib  # updated library
 
-# --- Paths & I/O ---
-input_path  = '../Simulation_Data/'
-root_folder = os.path.join(input_path, '.')   # contains plt*
-output_path = '.'
-os.makedirs(output_path, exist_ok=True)
-
-outfile_combined = os.path.join(output_path, 'Dataset.csv')
-
-# --- Device type & sweep setup ---
-mostype = 'p'  # 'n' or 'p' (used by metrics layer)
-if mostype == 'n':
-    V0, V1 = -1.0, 1.5
-else:
-    V0, V1 = 5.0, -10.0
-
-totalPt = 300
-V = np.linspace(V0, V1, totalPt)  # common grid for clustering features
-
-# Metrics configuration
-ITH_ABS      = 1e-5
-VDD          = -5.0 if mostype.lower() == 'p' else 5.0
-VOV_ON_ABS   = 5.0   # equal-overdrive magnitude for Ion
-VOV_OFF_ABS  = 2.0   # equal-overdrive magnitude for Ioff (subthreshold)
-IOFF_BIAS_V  = 0.0   # fixed-bias Ioff at Vgs = 0 V
+def _default_v_range(mostype: str) -> tuple[float, float]:
+    if mostype.lower() == 'n':
+        return (-1.0, 1.5)
+    return (5.0, -10.0)
 
 def _dedup_vg(Vg_series, Id_series):
     """Remove duplicate Vg entries and return numpy arrays."""
@@ -43,7 +24,9 @@ def _fmt(x, unit=""):
     return f"{x:.3e}{(' ' + unit) if unit else ''}"
 
 # --- Process one plt subfolder ---
-def process_one_folder(folder_path: str, tag: str):
+def process_one_folder(folder_path: str, tag: str, *, V: np.ndarray, mostype: str,
+                       ITH_ABS: float, VDD: float, VOV_ON_ABS: float,
+                       VOV_OFF_ABS: float, IOFF_BIAS_V: float):
     """
     Process a single subfolder containing gtree.dat and IdVg_*.plt files.
     Returns a DataFrame with per-node metadata, metrics, and I0..I{N-1}.
@@ -171,21 +154,80 @@ def process_one_folder(folder_path: str, tag: str):
     out_df["SourceFolder"] = tag
     return out_df
 
-# --- Process multiple subfolders: choose which plt* to include ---
-all_results = []
-for i in range(1, 4):  # adjust as needed
-    sub_tag = f"plt{i}"
-    sub_folder = os.path.join(root_folder, sub_tag)
-    if not os.path.isdir(sub_folder):
-        print(f"[WARN] {sub_folder} not found, skipping.")
-        continue
-    df = process_one_folder(sub_folder, sub_tag)
-    if df is not None and not df.empty:
-        all_results.append(df)
+def build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Extract TCAD Id-Vg data and compute metrics")
+    parser.add_argument("--input-path", default="../Simulation_Data/", help="Root directory containing plt* subfolders and gtree.dat")
+    parser.add_argument("--output-path", default=".", help="Output directory for Dataset.csv")
+    parser.add_argument("--outfile", default="Dataset.csv", help="Output CSV filename")
+    parser.add_argument("--mostype", choices=["n", "p"], default="p", help="MOS type affecting sign conventions and defaults")
+    parser.add_argument("--v0", type=float, default=None, help="Start of Vgs sweep (overrides default for mostype)")
+    parser.add_argument("--v1", type=float, default=None, help="End of Vgs sweep (overrides default for mostype)")
+    parser.add_argument("--points", type=int, default=300, help="Number of Vgs points for resampling")
+    parser.add_argument("--ith-abs", type=float, default=1e-5, help="Absolute threshold current for Vth calc")
+    parser.add_argument("--vdd", type=float, default=None, help="Drain bias for Ion_fixedV; defaults to -5 for p, +5 for n")
+    parser.add_argument("--vov-on-abs", type=float, default=5.0, help="Equal overdrive magnitude for Ion_eq")
+    parser.add_argument("--vov-off-abs", type=float, default=2.0, help="Equal overdrive magnitude for Ioff_eq")
+    parser.add_argument("--ioff-bias-v", type=float, default=0.0, help="Bias for fixed Ioff at Vgs")
+    parser.add_argument("--plt-start", type=int, default=1, help="First plt index to include (inclusive)")
+    parser.add_argument("--plt-end", type=int, default=3, help="Last plt index to include (inclusive)")
+    parser.add_argument("--plt-prefix", default="plt", help="Prefix of subfolders (e.g., 'plt' → plt1, plt2,...)")
+    return parser
 
-if not all_results:
-    raise RuntimeError("No data collected from any plt* folder. Check inputs.")
 
-# --- Combine & write outputs ---
-final_dataset = pd.concat(all_results, ignore_index=True)
-final_dataset.to_csv(outfile_combined, index=False, na_rep='NaN')
+def run(args: argparse.Namespace) -> str:
+    input_path = args.input_path
+    root_folder = os.path.join(input_path, ".")
+    output_path = args.output_path
+    os.makedirs(output_path, exist_ok=True)
+
+    # Determine V range
+    if args.v0 is not None and args.v1 is not None:
+        V0, V1 = float(args.v0), float(args.v1)
+    else:
+        V0, V1 = _default_v_range(args.mostype)
+    totalPt = int(args.points)
+    V = np.linspace(V0, V1, totalPt)
+
+    # Metrics configuration
+    ITH_ABS = float(args.ith_abs)
+    if args.vdd is not None:
+        VDD = float(args.vdd)
+    else:
+        VDD = -5.0 if args.mostype.lower() == 'p' else 5.0
+    VOV_ON_ABS = float(args.vov_on_abs)
+    VOV_OFF_ABS = float(args.vov_off_abs)
+    IOFF_BIAS_V = float(args.ioff_bias_v)
+
+    # Process multiple subfolders
+    all_results = []
+    for i in range(int(args.plt_start), int(args.plt_end) + 1):
+        sub_tag = f"{args.plt_prefix}{i}"
+        sub_folder = os.path.join(root_folder, sub_tag)
+        if not os.path.isdir(sub_folder):
+            print(f"[WARN] {sub_folder} not found, skipping.")
+            continue
+        df = process_one_folder(
+            sub_folder, sub_tag,
+            V=V, mostype=args.mostype,
+            ITH_ABS=ITH_ABS, VDD=VDD,
+            VOV_ON_ABS=VOV_ON_ABS, VOV_OFF_ABS=VOV_OFF_ABS,
+            IOFF_BIAS_V=IOFF_BIAS_V,
+        )
+        if df is not None and not df.empty:
+            all_results.append(df)
+
+    if not all_results:
+        raise RuntimeError("No data collected from any plt* folder. Check inputs.")
+
+    # Combine & write outputs
+    final_dataset = pd.concat(all_results, ignore_index=True)
+    outfile_combined = os.path.join(output_path, args.outfile)
+    final_dataset.to_csv(outfile_combined, index=False, na_rep='NaN')
+    print(f"[OK] Wrote dataset: {outfile_combined}")
+    return outfile_combined
+
+
+if __name__ == "__main__":
+    parser = build_arg_parser()
+    ns = parser.parse_args()
+    run(ns)
