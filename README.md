@@ -47,6 +47,15 @@ The system ingests TCAD simulation outputs, computes robust device metrics, cons
    - `Clustering/IV_Clusters/*` (plots + CSVs)
    - `SHAP_Analysis/SHAP_FromArrays/*`
 
+5. (Optional) Device physics analysis (MATLAB/Octave)
+   ```bash
+   # MATLAB R2020b+
+   matlab -batch "cd Device_Physics_Analysis; AlN"
+
+   # or GNU Octave 7+
+   octave --eval "cd Device_Physics_Analysis; AlN"
+   ```
+
 ## Detailed Instructions
 
 ### Preparing Input Data
@@ -166,6 +175,10 @@ Hybrid_Physics_AI_GaN_Framework/
 │   ├── IV_clustering.py        # Clustering CLI, plots, and CSV exports
 │   ├── mylibrary.py            # (legacy/auxiliary utilities)
 │   └── IV_Clusters/            # Outputs: plots, CSVs, summaries
+├── Device_Physics_Analysis/    # NEW: device-physics channel analysis (MATLAB/Octave)
+│   ├── processDataset.m        # Unified pipeline and plotting
+│   ├── Al.m AlN.m In.m         # Example launchers
+│   └── Al.csv AlN.csv In.csv   # Example input datasets
 ├── SHAP_Analysis/
 │   ├── SHAP_Analysis.py        # SHAP explainability pipeline
 │   ├── Dataset.csv             # (optional copy/reference for SHAP)
@@ -196,11 +209,50 @@ Hybrid_Physics_AI_GaN_Framework/
 ### Rich Visualization and Exports
 - Per-cluster and aggregate IV plots; cluster-wise metric summaries; CSV exports for downstream use.
 
+## Device Physics Analysis (MATLAB/Octave)
+
+This optional module analyzes position-resolved device-physics fields from TCAD (or experimental) exports to quantify charge transport along the channel.
+
+- **What it computes**:
+  - Pathwise products and integrals: ∫ p v dx, ∫ p v_sat dx, ∫ p μ E_x dx (units cm⁻¹·s⁻¹)
+  - Derived metrics per device/step: Q_p (cm⁻²), ⟨v⟩_p, ⟨μE_x⟩_p, ⟨v_sat⟩_p, η_v = ⟨v⟩_p/⟨v_sat⟩_p, r_lin = ⟨v⟩_p/⟨μE_x⟩_p
+  - Current per width estimate: I_pv ≈ q·W·∫ p v dx
+  - Step-to-step Δln(I) decomposition into charge vs velocity contributions
+
+- **Inputs**:
+  - CSV with headers of the form:
+    - `hDensity(<sampleKey>) X|Y`, `hVelocity(<sampleKey>) X|Y`, `hMobility(<sampleKey>) X|Y`, `hSaturationVelocity(<sampleKey>) X|Y`, `ElectricField-X(<sampleKey>) X|Y`
+  - Example datasets: `Device_Physics_Analysis/Al.csv`, `AlN.csv`, `In.csv`
+
+- **How to run**:
+  - Use provided launchers: `Al.m`, `AlN.m`, `In.m`
+  - Or call `processDataset.m` directly:
+
+    ```matlab
+    csvPath = 'Device_Physics_Analysis/AlN.csv';
+    tagMap  = containers.Map({'24463','24580'}, {'AlN1-1','AlN1-0'});
+    options = struct('W_cm', 1, 'makePlots', true, 'visibleFigures', 'off');
+    outputs = processDataset(csvPath, tagMap, options);
+    ```
+
+- **Outputs** (written under `<csv_basename>_processed_<timestamp>`):
+  - Per-sample CSV/PNG: `sample_<key>.csv`, `sample_<key>.png`
+  - Combined CSV: `all_samples_density_velocity_product.csv`
+  - Summary integrals: `summary_integrals.csv`
+  - Metrics vs step: `metrics_vs_step.png`
+  - Tradeoff decomposition: `tradeoff_decomposition.png`, `summary_integrals_with_tradeoff.csv`, `tradeoff_transition_summary.csv`
+
+- **Notes**:
+  - X coordinates are assumed in µm and converted to cm internally
+  - Set `options.W_cm` to your device width in cm to scale I estimates
+  - Plots default to headless; set `visibleFigures = 'on'` to view interactively
+
 ## Requirements
 
 - Python 3.9+
 - Packages pinned in `requirements.txt`
 - Optional: TCAD environment to generate PLT/gtree inputs (not required if using an existing `Dataset.csv`)
+- Optional: MATLAB R2020b+ or GNU Octave 7+ for `Device_Physics_Analysis`
 
 ## Troubleshooting
 
